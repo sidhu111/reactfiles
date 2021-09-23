@@ -1,0 +1,144 @@
+import React, { Component } from 'react';
+import axios from 'axios'
+import Userform from './Userform';
+
+
+class UserOp extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            users: [],
+            message: "",
+            user: {
+                "id": 0,
+                "email":"" ,
+                "username": ""
+            },
+            updateFlag:false
+
+        };
+    }
+
+    handleAddUser(user) {
+        if(this.state.updateFlag)
+        {
+                axios.put('http://localhost:8080/springboot-backend/' + user.id,user).then((res) => {
+                    console.log(res.status)
+                    res.status>=200&&res.status<300?this.setState({ message:'user data updtaed ',updateFlag:false },()=>{this.getData()}):this.setState({ message:'',updateFlag:false })
+        
+                }).catch((err) => {
+                    console.log(err)
+                }) 
+            }
+            else{
+                axios.post('http://localhost:8080/springboot-backend/',user).then((res) => {
+                    console.log(res.status)
+                    res.status>=200&&res.status<300?this.setState({ message:'user saved successfully '},()=>{this.getData()}):this.setState({ message:'' })
+        
+                }).catch((err) => {
+                    console.log(err)
+                }) 
+        
+            }
+            }
+        
+            handleRemove(id) {
+                axios.delete('http://localhost:8080/springboot-backend/' + id).then((res) => {
+                    this.setState({ message: res.data },()=>this.getData())
+        
+                }).catch((err) => {
+                    console.log(err)
+                })
+                
+        
+            }
+        
+            handleEdituser(id) {
+                axios.get('http://localhost:8080/springboot-backend/'+id).then((res) => {
+                    let user=res.data
+                    this.setState({user,updateFlag:true})
+                   
+            })
+        
+        
+                
+            }
+        
+            getData()
+            {
+                axios.get('http://localhost:8080/springboot-backend/').then((res) => {
+                    console.log(res.data)
+                    let users = res.data
+                    this.setState({ users })
+                }).catch((err) => {
+                    console.log(err)
+        
+                })
+            }
+        
+            componentDidMount()
+            {
+                       this.getData();
+                    }
+        
+        
+            render() {
+        
+                    console.log("render called");
+                    return(
+                        <div>
+                            <h2>
+                                Users List
+                            </h2>
+                            <h5 style={{color:'green'}}>{this.state.message}</h5>
+        
+                            <table className="table ">
+                                <thead>
+        
+                                    <th>id</th>
+                                    <th>email</th>
+                                   
+                                    <th>username</th>
+                                  
+                                    <th>actions</th>
+        
+                                </thead>
+                                <tbody>
+                                    {this.state.users.map((user) => {
+        
+        
+                                        return (
+                                            <tr  key={user.id}>
+                                                <td>{user.id}</td>
+                                                <td>{user.email}</td>
+                                                <td>{user.username}</td>
+                                                <button className="btn btn-primary" onClick={() => this.handleEdituser(user.id)} >edit</button>
+                                                <button className="btn btn-danger" onClick={() => this.handleRemove(user.id)}>delete</button>
+                                            </tr>
+        
+        
+                                        );
+        
+                                    })}
+                                </tbody>
+                            </table>
+        
+                           {!this.state.updateFlag ?
+                                <div>
+                                    <h3>Add New Users</h3>
+                                    <UserForm user={this.state.user}  handleAddUser={this.handleAddUser.bind(this)} />
+                                </div> :
+                                <div>
+                                    <h3>Update User detail</h3>
+                                    <UserForm user={this.state.user} handleAddUser={this.handleAddUser.bind(this)} />
+                                </div> 
+            }
+        
+                               
+        
+                        </div >
+                    );
+            }
+        }
+
+export default UserOp;

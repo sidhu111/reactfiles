@@ -1,0 +1,75 @@
+import  {React, Component } from "react";
+import Addcontact from "./Addcontact";
+
+class  Contact extends Component{
+
+    constructor(props){
+        super(props);
+        this.state = {
+            persons:[{"Id":"1","name":"raju","phone":"8919980919"},
+            {"Id":"2","name":"raju","phone":"8919980919"},
+            {"Id":"3","name":"raju","phone":"8919980919"}]
+
+        }
+    }
+
+    handleRemove=(index)=>{
+        const current = this.state;
+        let newstate = current.persons.filter((person,inde)=>{
+            return inde !== index
+        })
+        //new state updated
+        this.setState(state =>({persons: newstate}))
+
+    }
+
+
+
+    render(){
+        return(
+            <div>
+               
+               <div className="Addform">
+                   <div>
+                   <h3>New Contact</h3>
+                   </div>   
+               <Addcontact/>
+               </div>
+               <br></br>
+               <br></br>
+
+                <table className="Tablecontact">
+                    <thead>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody>
+                        {
+                            this.state.persons.map((Person,inde)=>{
+                                return <tr key={inde}>
+                                    <td>{Person.Id}</td>
+                                    <td>{Person.name}</td>
+                                    <td>{Person.phone}</td>
+                                    
+                                    {/* <td>{Person.action}</td> */}
+                                    <button onClick={()=>{this.handleedit(inde)}} className="btn btn-info">Edit</button>
+                                    <button onClick={()=>{this.handleRemove(inde)}} className="btn btn-info">Remove</button>
+                                </tr>
+                            })
+                        }
+                    </tbody>
+                </table>
+
+           
+
+           
+               </div>
+
+        )
+    }
+
+}
+export default Contact;
+

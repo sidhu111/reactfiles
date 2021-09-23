@@ -1,0 +1,52 @@
+import { Component } from "react";
+
+class Addcontact extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            id:null,
+            name:null,
+            phone:null
+
+        }
+    }
+
+    handleOnChange = (event)=>{
+        console.log(event.target);
+        console.log(event.target.value);
+        this.setState({
+            [event.target.name]:event.target.value
+        })
+    }
+
+    handleOnSubmit = (event)=>{
+        event.preventDefault();
+        console.log(this.state);     
+         this.props.addContact(this.state);   
+        // this.props.Addcontact(this.state)
+        event.target.reset();
+    }
+
+   
+
+    render(){
+        return(
+            <div>
+               <div>
+                </div>
+                <div>
+                <form onSubmit={this.handleOnSubmit}>
+                 {/* Id:<input type="number" name="name" onChange={this.handleOnChange}/> */}
+                name:<input type="text" name="name" onChange={this.handleOnChange}/> 
+                phone:<input type="number" name="phone" onChange={this.handleOnChange}/>
+                  
+                    <button className="btn btn-info">add Contact</button>
+                </form>
+                </div>
+               
+            </div>
+
+        )
+    }
+}
+export default Addcontact
